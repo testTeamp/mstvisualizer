@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.anychart.com/releases/8.11.0/js/anychart-core.min.js"></script>
+    <script src="https://cdn.anychart.com/releases/8.11.0/js/anychart-graph.min.js"></script>
+    <script src="https://cdn.anychart.com/releases/8.11.0/js/anychart-ui.min.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdn.anychart.com/releases/8.11.0/css/anychart-ui.min.css?hcode=a0c21fc77e1449cc86299c5faa067dc4"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdn.anychart.com/releases/8.11.0/fonts/css/anychart-font.min.css"
+    />
+    <title>MST Visualizer</title>
+  </head>
+  <style>
+    #container {
+      border: 1px solid black;
+      width: 70%;
+      height: 500px;
+      margin: 1rem;
+      margin-left: 2.6rem;
+      padding: 0;
+    }
+    #result-container {
+      border: 1px solid rgb(71, 233, 71);
+      width: 70%;
+      height: 500px;
+      margin: 1rem;
+      padding: 0;
+    }
+
+    @media only screen and (max-width: 1082px) {
+      #container {
+        border: 1px solid black;
+        width: 100%;
+        height: 500px;
+        margin: 1rem;
+        padding: 0;
+      }
+      #result-container {
+        border: 1px solid rgb(71, 233, 71);
+        width: 100%;
+        height: 500px;
+        margin: 1rem;
+        padding: 0;
+      }
+    }
+  </style>
+  <body class="mx-1 my-4 row">
+    <div class="col-md-8">
+      <label class="col-md-10 my-2">ENTER ADJACENCY MATRIX: </label>
+      <input
+        class="col-md-10 form-control"
+        type="text"
+        name="matrix-value"
+        id="matrix-value"
+        placeholder="Enter adjacency matrix"
+      />
+      <button class="col-md-3 mt-2 btn btn-info" onclick="fetchMatrix()">
+        Draw Graph
+      </button>
+    </div>
+    <div class="col-md-3">
+      <div id="res" style="display: none" class="text-center col-md-12">
+        Minimum spanning edges
+      </div>
+      <ol id="textResult">
+
+      </ol>
+    </div>
+    </ol>
+
+    <div class="col-md-6" style="display: none" id="container"></div>
+    <div class="col-md-6" style="display: none" id="result-container"></div>
+  </body>
+
+  <script
+    src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+    integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+    crossorigin="anonymous"
+  ></script>
+  <script
+    src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
+    integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+    crossorigin="anonymous"
+  ></script>
+  <script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
+    integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+    crossorigin="anonymous"
+  ></script>
+  <script>
+    function fetchMatrix() {
+      if (JSON.parse(document.getElementById("matrix-value").value)) {
+        document.getElementById("container").remove();
+        document.getElementById("res").classList.add("d-none")
+        var newdiv = document.createElement("div");
+        newdiv.setAttribute("id", "container");
+        newdiv.classList.add("col-md-5");
+        newdiv.classList.add("text-center");
+        document.body.appendChild(newdiv);
+
+        var mat = JSON.parse(document.getElementById("matrix-value").value);
+        // console.log(mat)
+        var vertices = mat[0].length;
+
+        nodes = [];
+
+        for (let index = 0; index < vertices; index++) {
+          let obj = {
+            id: String.fromCharCode(parseInt(65 + index)),
+            nodeName: String.fromCharCode(parseInt(65 + index)),
+          };
+          nodes.push(obj);
+        }
+
+        console.log(nodes);
+
+        edges = [];
+
+        //For directed graph
+        // for (let i = 0; i < vertices; i++) {
+        //   for (let j = 0; j < vertices; j++) {
+        //     if(mat[i][j] > 0){
+        //       let edgeObj = {from: `${i}`, to: `${j}`}
+        //       edges.push(edgeObj)
+        //     }
+        //   }
+        // }
+
+        // For undirected graph
+        for (let i = 0; i < vertices; i++) {
+          for (let j = 0; j <= i; j++) {
+            if (mat[i][j] > 0) {
+              let edgeObj = {
+                from: String.fromCharCode(parseInt(65 + i)),
+                to: String.fromCharCode(parseInt(65 + j)),
+                dist: `${mat[i][j]}`,
+                normal: { stroke: { color: "#ffa000" } },
+              };
+              edges.push(edgeObj);
+            }
+          }
+        }
+
+        console.log(edges);
+
+        anychart.onDocumentReady(function () {
+          // create data
+          var data = {
+            nodes: nodes,
+            edges: edges,
+          };
+
+          // create a chart and set the data
+          var chart = anychart.graph(data);
+
+          // prevent zooming the chart with the mouse wheel
+          chart.interactivity().zoomOnMouseWheel(false);
+
+          // enable labels of nodes
+          chart.nodes().labels().enabled(true);
+
+          // configure labels of nodes
+          chart.nodes().labels().format("{%nodeName}");
+          chart.nodes().labels().fontSize(12);
+          chart.nodes().labels().fontWeight(600);
+
+          // configure tooltips of nodes
+          chart.nodes().tooltip().useHtml(true);
+          chart
+            .nodes()
+            .tooltip()
+            .format("<span style='font-weight:bold'>{%id} </span>");
+
+          // enable labels of edges
+          chart.edges().labels().enabled(true);
+
+          // configure labels of nodes
+          chart.edges().labels().format("{%dist}");
+          chart.edges().labels().fontSize(12);
+          chart.edges().labels().fontWeight(600);
+
+          // configure tooltips of edges
+          chart
+            .edges()
+            .tooltip()
+            .format("{%from} -> {%to} or {%to} -> {%from}");
+
+          // set the chart title
+          chart.title("Given Graph");
+
+          // set the container id
+          chart.container("container");
+          chart.interactivity().zoomOnMouseWheel(true);
+          // initiate drawing the chart
+          chart.draw();
+        });
+
+        // ----------------------------------------------------------------------------------------------------------------------
+        let V = vertices;
+
+        // A utility function to find the vertex with
+        // minimum key value, from the set of vertices
+        // not yet included in MST
+        function minKey(key, mstSet) {
+          // Initialize min value
+          let min = Number.MAX_VALUE,
+            min_index;
+
+          for (let v = 0; v < V; v++)
+            if (mstSet[v] == false && key[v] < min)
+              (min = key[v]), (min_index = v);
+
+          return min_index;
+        }
+
+        // A utility function to print the
+        // constructed MST stored in parent[]
+
+        function sleep(time) {
+          return new Promise((resolve) => setTimeout(resolve, time));
+        }
+
+        async function printMST(parent, graph) {
+          for (let i = 1; i < V; i++) {
+            
+            await sleep(5000);
+            document.getElementById("res").classList.add("d-block")
+            var listele = document.createElement("li");
+            // Create a text node:
+            console.log(`${String.fromCharCode(parent[i] + 65)} --> ${String.fromCharCode(i + 65)}`)
+            const textnode = document.createTextNode(`${String.fromCharCode(parent[i] + 65)} --> ${String.fromCharCode(i + 65)}`);
+            // Append the text node to the "li" node:
+            listele.classList.add("badge")
+            listele.classList.add("badge-secondary")
+            listele.classList.add("mx-1")
+            listele.classList.add("my-1")
+            listele.appendChild(textnode);
+            // Append the "li" node to the list:
+            document.getElementById("textResult").appendChild(listele);
+
+            // document.write(parent[i] + "   -  " + i + "<br>");
+            edges.forEach((element, ind) => {
+              // console.log("---->",element.from.charCodeAt(0)-65,element.to.charCodeAt(0)-65)
+              if ((element.from.charCodeAt(0) - 65 == String(parent[i]) && element.to.charCodeAt(0) - 65 == String(i)) || (element.from.charCodeAt(0) - 65 == String(i) && element.to.charCodeAt(0) - 65 == String(parent[i]))) {
+                console.log("helooooooooooooooooooooooooooo")
+                edges.push({
+                  from: `${element.from}`,
+                  to: `${element.to}`,
+                  dist: `${element.dist}`,
+                  normal: { stroke: { color: "#000000" } },
+                });
+                edges.splice(ind, 1);
+
+                anychart.onDocumentReady(function () {
+                  document.getElementById("result-container").remove();
+                  var newresultdiv = document.createElement("div");
+                  newresultdiv.setAttribute("id", "result-container");
+                  newresultdiv.classList.add("col-md-6");
+                  newresultdiv.classList.add("text-center");
+                  document.body.appendChild(newresultdiv);
+
+                  // create data
+                  var data = {
+                    nodes: nodes,
+                    edges: edges,
+                  };
+
+                  // create a chart and set the data
+                  var chart = anychart.graph(data);
+
+                  // prevent zooming the chart with the mouse wheel
+                  chart.interactivity().zoomOnMouseWheel(false);
+
+                  // enable labels of nodes
+                  chart.nodes().labels().enabled(true);
+
+                  // configure labels of nodes
+                  chart.nodes().labels().format("{%nodeName}");
+                  chart.nodes().labels().fontSize(12);
+                  chart.nodes().labels().fontWeight(600);
+
+                  // enable labels of edges
+                  chart.edges().labels().enabled(true);
+
+                  // configure labels of nodes
+                  chart.edges().labels().format("{%dist}");
+                  chart.edges().labels().fontSize(12);
+                  chart.edges().labels().fontWeight(600);
+
+                  // configure tooltips of nodes
+                  chart.nodes().tooltip().useHtml(true);
+                  chart
+                    .nodes()
+                    .tooltip()
+                    .format("<span style='font-weight:bold'>{%id} </span>");
+
+                  // configure tooltips of edges
+                  chart
+                    .edges()
+                    .tooltip()
+                    .format("{%from} -> {%to} or {%to} -> {%from}");
+
+                  // set the chart title
+                  chart.title("Minimum spanning tree");
+
+                  // set the container id
+                  chart.container("result-container");
+                  chart.interactivity().zoomOnMouseWheel(true);
+                  // initiate drawing the chart
+                  chart.draw();
+                });
+              }
+            });
+          }
+          // console.log("edddgees====>",edges)
+
+          // ----------------------------------------------------------------------------
+
+          // ----------------------------------------------------------------------------
+        }
+
+        // Function to construct and print MST for
+        // a graph represented using adjacency
+        // matrix representation
+        function primMST(graph) {
+          // Array to store constructed MST
+          let parent = [];
+
+          // Key values used to pick minimum weight edge in cut
+          let key = [];
+
+          // To represent set of vertices included in MST
+          let mstSet = [];
+
+          // Initialize all keys as INFINITE
+          for (let i = 0; i < V; i++)
+            (key[i] = Number.MAX_VALUE), (mstSet[i] = false);
+
+          // Always include first 1st vertex in MST.
+          // Make key 0 so that this vertex is picked as first vertex.
+          key[0] = 0;
+          parent[0] = -1; // First node is always root of MST
+
+          // The MST will have V vertices
+          for (let count = 0; count < V - 1; count++) {
+            // Pick the minimum key vertex from the
+            // set of vertices not yet included in MST
+            let u = minKey(key, mstSet);
+
+            // Add the picked vertex to the MST Set
+            mstSet[u] = true;
+
+            // Update key value and parent index of
+            // the adjacent vertices of the picked vertex.
+            // Consider only those vertices which are not
+            // yet included in MST
+            for (let v = 0; v < V; v++)
+              // graph[u][v] is non zero only for adjacent vertices of m
+              // mstSet[v] is false for vertices not yet included in MST
+              // Update the key only if graph[u][v] is smaller than key[v]
+              if (graph[u][v] && mstSet[v] == false && graph[u][v] < key[v])
+                (parent[v] = u), (key[v] = graph[u][v]);
+          }
+
+          // print the constructed MST
+          printMST(parent, graph);
+        }
+
+        // Driver code
+
+        let graph = mat;
+
+        // Print the solution
+        primMST(graph);
+
+        // ----------------------------------------------------------------------------------------------------------------------
+      } else {
+        alert("Please input adjacency matrix and try again.");
+      }
+    }
+  </script>
+</html>
