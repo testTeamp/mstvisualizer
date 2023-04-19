@@ -26,6 +26,15 @@
     <title>MST Visualizer</title>
   </head>
   <style>
+    .footer {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  background-color: #212529;
+  color: white;
+  text-align: center;
+}
     #container {
       border: 1px solid black;
       width: 70%;
@@ -42,7 +51,14 @@
       padding: 0;
     }
 
+
+
+    @media only screen and (max-width: 900px) {
+      #main-box{ flex-direction: column; }
+
+    }
     @media only screen and (max-width: 1082px) {
+      
       #container {
         border: 1px solid black;
         width: 100%;
@@ -59,32 +75,73 @@
       }
     }
   </style>
-  <body class="mx-1 my-4 row">
-    <div class="col-md-8">
-      <label class="col-md-10 my-2">ENTER ADJACENCY MATRIX: </label>
-      <input
-        class="col-md-10 form-control"
-        type="text"
-        name="matrix-value"
-        id="matrix-value"
-        placeholder="Enter adjacency matrix"
-      />
-      <button class="col-md-3 mt-2 btn btn-info" onclick="fetchMatrix()">
-        Draw Graph
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <a class="navbar-brand" href="#">Navbar</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
       </button>
-    </div>
-    <div class="col-md-3">
-      <div id="res" style="display: none" class="text-center col-md-12">
-        Minimum spanning edges
+    
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item active">
+            <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Link</a>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Dropdown
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <a class="dropdown-item" href="#">Action</a>
+              <a class="dropdown-item" href="#">Another action</a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="#">Something else here</a>
+            </div>
+          </li>
+          
+        </ul>
       </div>
-      <ol id="textResult">
+    </nav>
+    
+    <div class="mx-1 my-2 row">
+      <div class="col-md-8">
+        <label class="col-md-10 my-2">ENTER ADJACENCY MATRIX: </label>
+        <input
+          class="col-md-10 form-control"
+          type="text"
+          name="matrix-value"
+          id="matrix-value"
+          placeholder="Enter adjacency matrix"
+        />
+        <button class="col-md-3 mt-2 btn btn-info" onclick="fetchMatrix()">
+          Draw Graph
+        </button>
+      </div>
 
-      </ol>
+      <div class="col-md-3 my-1" style="border: 1px solid rgb(103, 252, 250);">
+        <div id="res" class="text-center display-5 p-1 col-md-12">
+          Minimum spanning edges
+          <hr />
+        </div>
+        <ol id="textResult">
+  
+        </ol>
+      </div>
+      
+      <div id="main-box" class="col-md-12 d-flex">
+        <div class="col-md-6" style="display: none" id="container"></div>
+        <div class="col-md-6" style="display: none" id="result-container"></div>
+
+      </div>
+
+      <footer class="footer col-md-12">  
+        <p class="text-center"> ©Copyright 2023.  All rights reserved. </p>  
+        </footer> 
     </div>
-    </ol>
 
-    <div class="col-md-6" style="display: none" id="container"></div>
-    <div class="col-md-6" style="display: none" id="result-container"></div>
   </body>
 
   <script
@@ -106,12 +163,13 @@
     function fetchMatrix() {
       if (JSON.parse(document.getElementById("matrix-value").value)) {
         document.getElementById("container").remove();
-        document.getElementById("res").classList.add("d-none")
+        // document.getElementById("res").classList.add("d-none")
         var newdiv = document.createElement("div");
+        var mainBox = document.getElementById("main-box");
         newdiv.setAttribute("id", "container");
         newdiv.classList.add("col-md-5");
         newdiv.classList.add("text-center");
-        document.body.appendChild(newdiv);
+        mainBox.appendChild(newdiv);
 
         var mat = JSON.parse(document.getElementById("matrix-value").value);
         // console.log(mat)
@@ -269,10 +327,11 @@
                 anychart.onDocumentReady(function () {
                   document.getElementById("result-container").remove();
                   var newresultdiv = document.createElement("div");
+                  var mainBox = document.getElementById("main-box");
                   newresultdiv.setAttribute("id", "result-container");
                   newresultdiv.classList.add("col-md-6");
                   newresultdiv.classList.add("text-center");
-                  document.body.appendChild(newresultdiv);
+                  mainBox.appendChild(newresultdiv);
 
                   // create data
                   var data = {
