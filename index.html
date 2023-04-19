@@ -77,7 +77,7 @@
   </style>
   <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-      <a class="navbar-brand" href="index.html">MST Visualizer</a>
+      <a class="navbar-brand" href="#">Navbar</a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -85,7 +85,7 @@
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
           <li class="nav-item active">
-            <a class="nav-link" href="index.html">Home <span class="sr-only">(current)</span></a>
+            <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="#">Link</a>
@@ -207,7 +207,7 @@
                 from: String.fromCharCode(parseInt(65 + i)),
                 to: String.fromCharCode(parseInt(65 + j)),
                 dist: `${mat[i][j]}`,
-                normal: { stroke: { color: "#ffa000" } },
+                normal: { stroke: { color: "#ffa000",thickness: "3"} },
               };
               edges.push(edgeObj);
             }
@@ -233,9 +233,10 @@
           chart.nodes().labels().enabled(true);
 
           // configure labels of nodes
+          chart.nodes().height(20)
           chart.nodes().labels().format("{%nodeName}");
-          chart.nodes().labels().fontSize(12);
-          chart.nodes().labels().fontWeight(600);
+          chart.nodes().labels().fontSize(15);
+          chart.nodes().labels().fontWeight(550);
 
           // configure tooltips of nodes
           chart.nodes().tooltip().useHtml(true);
@@ -249,8 +250,8 @@
 
           // configure labels of nodes
           chart.edges().labels().format("{%dist}");
-          chart.edges().labels().fontSize(12);
-          chart.edges().labels().fontWeight(600);
+          chart.edges().labels().fontSize(15);
+          chart.edges().labels().fontWeight(550);
 
           // configure tooltips of edges
           chart
@@ -320,7 +321,7 @@
                   from: `${element.from}`,
                   to: `${element.to}`,
                   dist: `${element.dist}`,
-                  normal: { stroke: { color: "#000000" } },
+                  normal: { stroke: { color: "#000000", thickness: '4', dash: "10 5" } },
                 });
                 edges.splice(ind, 1);
 
@@ -349,17 +350,18 @@
                   chart.nodes().labels().enabled(true);
 
                   // configure labels of nodes
+                  chart.nodes().height(20)
                   chart.nodes().labels().format("{%nodeName}");
-                  chart.nodes().labels().fontSize(12);
-                  chart.nodes().labels().fontWeight(600);
+                  chart.nodes().labels().fontSize(15);
+                  chart.nodes().labels().fontWeight(550);
 
                   // enable labels of edges
                   chart.edges().labels().enabled(true);
 
                   // configure labels of nodes
                   chart.edges().labels().format("{%dist}");
-                  chart.edges().labels().fontSize(12);
-                  chart.edges().labels().fontWeight(600);
+                  chart.edges().labels().fontSize(15);
+                  chart.edges().labels().fontWeight(550);
 
                   // configure tooltips of nodes
                   chart.nodes().tooltip().useHtml(true);
